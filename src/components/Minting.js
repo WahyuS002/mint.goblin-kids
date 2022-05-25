@@ -4,9 +4,9 @@ const truncate = (input, len) => (input.length > len ? `${input.substring(0, len
 
 export default function Minting() {
     return (
-        <div className="flex justify-between items-center">
-            <div>
-                <h1 className="font-bold text-6xl">
+        <div className="flex flex-col-reverse md:flex-row justify-between md:items-center">
+            <div className="mb-36 md:mb-0 mt-4 mb:mt-4">
+                <h1 className="font-bold text-3xl md:text-6xl text-center md:text-left">
                     <span>Mint your</span> <br /> <span className="text-primary">Goblin Kids</span>
                 </h1>
                 <div className="w-full bg-semi-dark mt-6 px-6 py-5 rounded-xl">

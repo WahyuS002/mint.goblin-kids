@@ -4,7 +4,7 @@ export default function Alert() {
     return (
         <div className="flex justify-center">
             <div className="absolute bottom-4">
-                <div className="px-12 py-4 bg-semi-dark border border-gray-600 rounded-lg">
+                <div className="px-8 md:px-12 py-4 bg-semi-dark border border-gray-600 rounded-lg">
                     <div className="flex items-center space-x-2">
                         <span>
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-300" viewBox="0 0 20 20" fill="currentColor">
