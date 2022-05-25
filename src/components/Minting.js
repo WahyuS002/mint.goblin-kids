@@ -1,8 +1,180 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchData } from '../redux/data/dataActions'
+import { connect } from '../redux/blockchain/blockchainActions'
+import Web3 from 'web3'
 
+import { toast } from 'react-toastify'
+
+const web3 = new Web3()
 const truncate = (input, len) => (input.length > len ? `${input.substring(0, len)}...` : input)
 
 export default function Minting() {
+    const dispatch = useDispatch()
+    const blockchain = useSelector((state) => state.blockchain)
+    const data = useSelector((state) => state.data)
+
+    const [claimingNft, setClaimingNft] = useState(false)
+
+    const [mintAmount, setMintAmount] = useState(1)
+    const [canIncrement, setCanIncrement] = useState(true)
+    const [canDecrement, setCanDecrement] = useState(false)
+
+    const [CONFIG, SET_CONFIG] = useState({
+        CONTRACT_ADDRESS: '',
+        SCAN_LINK: '',
+        NETWORK: {
+            NAME: '',
+            SYMBOL: '',
+            ID: 0,
+        },
+        NFT_NAME: '',
+        SYMBOL: '',
+        MAX_SUPPLY: 0,
+        GAS_LIMIT: 0,
+    })
+
+    const decrementMintAmount = () => {
+        let newMintAmount = mintAmount - 1
+        if (newMintAmount === 1) {
+            setCanDecrement(false)
+        }
+        if (newMintAmount < 1) {
+            newMintAmount = 1
+        }
+        setMintAmount(newMintAmount)
+        setCanIncrement(true)
+    }
+
+    const incrementMintAmount = () => {
+        let newMintAmount = mintAmount + 1
+        if (newMintAmount === 40) {
+            setCanIncrement(false)
+        }
+        if (newMintAmount > 40) {
+            newMintAmount = 40
+        }
+        setMintAmount(newMintAmount)
+        setCanDecrement(true)
+    }
+
+    const getConfig = async () => {
+        const configResponse = await fetch('/config/config.json', {
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+            },
+        })
+        const config = await configResponse.json()
+        SET_CONFIG(config)
+    }
+
+    const getData = () => {
+        if (blockchain.account !== '' && blockchain.smartContract !== null) {
+            dispatch(fetchData(blockchain.account))
+        }
+    }
+
+    const claimNFTs = () => {
+        let cost = data.price
+        let gasLimit = CONFIG.GAS_LIMIT
+        let totalCostWei = String(cost * mintAmount)
+
+        if (data.paused) {
+            toast.info('Minting will open soon.')
+        } else {
+            console.log('Current Wallet Supply : ', data.currentWalletSupply)
+            if (parseInt(mintAmount) + parseInt(data.totalSupply) > parseInt(data.maxSupply)) {
+                toast.warning('You have exceeded the max limit of minting.')
+            } else {
+                if (data.isFreeMintOpen) {
+                    return freeMintTokens(gasLimit)
+                } else {
+                    return mintTokens(gasLimit, totalCostWei)
+                }
+            }
+        }
+    }
+
+    const freeMintTokens = (gasLimit) => {
+        if (parseInt(data.currentWalletSupply) + mintAmount > parseInt(data.maxFreeMintAmountPerAddr)) {
+            toast.warning('Exceeds max free mint per wallet!')
+        } else if (parseInt(data.totalSupply) + mintAmount > parseInt(data.maxFreeMintSupply)) {
+            toast.warning('Exceeds max free mint supply!')
+        } else {
+            toast.info(`Minting your free ${CONFIG.NFT_NAME}...`)
+            setClaimingNft(true)
+            return blockchain.smartContract.methods
+                .freeMint(mintAmount)
+                .send({
+                    gasLimit: gasLimit,
+                    to: CONFIG.CONTRACT_ADDRESS,
+                    from: blockchain.account,
+                })
+                .once('error', () => {
+                    toast.error('Sorry, something went wrong please try again later.')
+                    setClaimingNft(false)
+                })
+                .then(() => {
+                    toast.success(`WOW, the ${CONFIG.NFT_NAME} is yours! go visit Opensea.io to view it.`)
+                    setClaimingNft(false)
+                    dispatch(fetchData(blockchain.account))
+                })
+        }
+    }
+
+    const mintTokens = (gasLimit, totalCostWei) => {
+        if (mintAmount > parseInt(data.maxMintAmountPerTx)) {
+            toast.warning('Exceeds max mint amount per tx!')
+        } else if (parseInt(data.totalSupply) + mintAmount > parseInt(data.maxSupply)) {
+            toast.warning('Max supply exceeded!')
+        } else if (parseInt(data.currentWalletSupply) + mintAmount > 40) {
+            toast.warning('Exceeds max mint per wallet!')
+        } else {
+            toast.info(`Minting your ${CONFIG.NFT_NAME}...`)
+            setClaimingNft(true)
+            return blockchain.smartContract.methods
+                .mint(mintAmount)
+                .send({
+                    gasLimit: gasLimit,
+                    to: CONFIG.CONTRACT_ADDRESS,
+                    from: blockchain.account,
+                    value: totalCostWei,
+                })
+                .once('error', (err) => {
+                    console.log(err)
+                    toast.error('Sorry, something went wrong please try again later.')
+                    setClaimingNft(false)
+                })
+                .then((receipt) => {
+                    console.log(receipt)
+                    toast.success(`WOW, the ${CONFIG.NFT_NAME} is yours! go visit Opensea.io to view it.`)
+                    setClaimingNft(false)
+                    dispatch(fetchData(blockchain.account))
+                })
+        }
+    }
+
+    const isWalletConnected = () => {
+        return blockchain.account
+    }
+
+    const isContractReady = () => {
+        return blockchain.smartContract
+    }
+
+    const isLoading = () => {
+        return data.loading
+    }
+
+    useEffect(() => {
+        getConfig()
+    }, [])
+
+    useEffect(() => {
+        getData()
+    }, [blockchain.account])
+
     return (
         <div className="flex flex-col-reverse md:flex-row justify-between md:items-center">
             <div className="mb-36 md:mb-0 mt-4 mb:mt-4">
@@ -12,12 +184,25 @@ export default function Minting() {
                 <div className="w-full bg-semi-dark mt-6 px-6 py-5 rounded-xl">
                     <div className="flex justify-between">
                         <span>Supply</span>
-                        <span className="text-sm text-gray-400 font-medium">XXX / 7777</span>
+                        <span className="text-sm text-gray-400 font-medium">{isWalletConnected() && isContractReady() && !isLoading() ? data.totalSupply : 'XXX'} / 7777</span>
                     </div>
                     <div className="flex justify-between mt-3">
-                        <span>Amount</span>
+                        <div className="flex items-center">
+                            <span>Amount</span>
+                            <button
+                                onClick={() => setMintAmount(40)}
+                                className="px-1 text-xs font-semibold bg-primary hover:bg-teal-500 transition-all duration-300 ease-in-out rounded-sm ml-2 text-semi-dark"
+                            >
+                                Max
+                            </button>
+                        </div>
                         <span className="space-x-4 flex items-center">
-                            <button>
+                            <button
+                                onClick={(e) => {
+                                    e.preventDefault()
+                                    decrementMintAmount()
+                                }}
+                            >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     className="h-6 w-6 text-gray-400 hover:text-primary transition-all duration-300 ease-in-out"
@@ -27,8 +212,13 @@ export default function Minting() {
                                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
                                 </svg>
                             </button>
-                            <span className="text-xl">1</span>
-                            <button>
+                            <span className="text-xl">{mintAmount}</span>
+                            <button
+                                onClick={(e) => {
+                                    e.preventDefault()
+                                    incrementMintAmount()
+                                }}
+                            >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     className="h-6 w-6 text-gray-400 hover:text-primary transition-all duration-300 ease-in-out"
@@ -49,7 +239,13 @@ export default function Minting() {
                                     <path d="M11.944 17.97L4.58 13.62 11.943 24l7.37-10.38-7.372 4.35h.003zM12.056 0L4.69 12.223l7.365 4.354 7.365-4.35L12.056 0z" />
                                 </svg>
                             </span>
-                            <span className="text-sm text-gray-400 font-medium">null</span>
+                            <span className="text-sm text-gray-400 font-medium">
+                                {isWalletConnected() && isContractReady() && !isLoading() ? (
+                                    <>{!data.isFreeMintOpen ? web3.utils.fromWei(web3.utils.toBN(data.price)) * mintAmount + ' ETH' : 'Free'}</>
+                                ) : (
+                                    'null'
+                                )}
+                            </span>
                         </div>
                     </div>
                     <div className="flex justify-between mt-3">
@@ -64,13 +260,47 @@ export default function Minting() {
                                     />
                                 </svg>
                             </span>
-                            <a href="/" className="text-sm text-gray-400">
-                                {truncate('0x6f75FFD9f92Ff4dE083e5421c9e8949642420A63', 7)}
+                            <a href={CONFIG.SCAN_LINK} className="text-sm text-gray-400">
+                                {truncate(CONFIG.CONTRACT_ADDRESS, 7)}
                             </a>
                         </div>
                     </div>
                 </div>
-                <button className="mt-6 bg-primary hover:bg-teal-500 transition-all duration-300 ease-in-out text-semi-dark font-semibold text-xl w-full py-3 rounded-lg">Connect Your Wallet</button>
+                {isWalletConnected() && isContractReady() && !isLoading() && !claimingNft ? (
+                    <button
+                        className="mt-6 bg-primary hover:bg-teal-500 transition-all duration-300 ease-in-out text-semi-dark font-semibold text-xl w-full py-3 rounded-lg"
+                        onClick={(e) => {
+                            e.preventDefault()
+                            claimNFTs()
+                            getData()
+                        }}
+                    >
+                        Mint
+                    </button>
+                ) : (
+                    <>
+                        {isLoading() && !claimingNft ? (
+                            <button className="mt-6 bg-primary hover:bg-teal-500 transition-all duration-300 ease-in-out text-semi-dark font-semibold text-xl w-full py-3 rounded-lg cursor-not-allowed">
+                                Loading . . .
+                            </button>
+                        ) : (
+                            <>
+                                {!claimingNft && (
+                                    <button
+                                        className="mt-6 bg-primary hover:bg-teal-500 transition-all duration-300 ease-in-out text-semi-dark font-semibold text-xl w-full py-3 rounded-lg"
+                                        onClick={(e) => {
+                                            e.preventDefault()
+                                            dispatch(connect())
+                                            getData()
+                                        }}
+                                    >
+                                        Connect Your Wallet
+                                    </button>
+                                )}
+                            </>
+                        )}
+                    </>
+                )}
             </div>
             <img
                 src="https://lh3.googleusercontent.com/0TuQ40Ul_R8JuyarGsplYIj_pIomT7iyhP2MZZiiBNX2I0wiq0yQZoNpBtiF96VeioQSikDsrI80BCgpwc-RgGaWko9yctHSU0H05VM=w600"

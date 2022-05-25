@@ -4,10 +4,10 @@ const initialState = {
     errorMsg: '',
 
     maxSupply: 0,
-    cost: 0,
-    maxFreeMintSupply: 0,
-    maxFreeMintAmountPerAddr: 0,
-    maxMintAmountPerTx: 0,
+    price: 0,
+    maxFreeSupply: 0,
+    maxFreePerWallet: 0,
+    maxPerTx: 0,
 
     isFreeMintOpen: false,
     paused: false,
