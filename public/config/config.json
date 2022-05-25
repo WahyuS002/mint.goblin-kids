@@ -1,0 +1,15 @@
+{
+    "CONTRACT_ADDRESS": "0x16599Bfa363675a9dE0e0c5320aa5229e500B735",
+    "SCAN_LINK": "https://etherscan.io/address/0x16599Bfa363675a9dE0e0c5320aa5229e500B735",
+    "NETWORK": {
+        "NAME": "Rinkeby",
+        "SYMBOL": "ETH",
+        "ID": 4
+    },
+    "NFT_NAME": "Goblin Kids",
+    "SYMBOL": "GK",
+    "MAX_SUPPLY": "7777",
+    "GAS_LIMIT": 285000,
+    "MARKETPLACE": "Opensea",
+    "MARKETPLACE_LINK": "https://opensea.io"
+}
