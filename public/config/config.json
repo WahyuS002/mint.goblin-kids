@@ -8,7 +8,7 @@
     },
     "NFT_NAME": "Goblin Kids",
     "SYMBOL": "GK",
-    "MAX_SUPPLY": "7777",
+    "MAX_SUPPLY": "8888",
     "GAS_LIMIT": 285000,
     "MARKETPLACE": "Opensea",
     "MARKETPLACE_LINK": "https://opensea.io"

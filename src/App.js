@@ -7,7 +7,7 @@ import 'react-toastify/dist/ReactToastify.css'
 
 function App() {
     return (
-        <div className="bg-black min-h-screen text-white font-rubik relative">
+        <div className="bg-black min-h-screen text-white font-blue-goblet-regular relative">
             <ToastContainer />
             <div className="px-5 md:px-24 py-6">
                 <Navbar />

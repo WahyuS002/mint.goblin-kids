@@ -3,12 +3,7 @@ import React from 'react'
 export default function Navbar() {
     return (
         <div className="flex justify-between">
-            <div className="flex items-center space-x-3">
-                <div className="w-6 h-6 rounded-full bg-primary"></div>
-                <h5 className="font-semibold text-xl">
-                    GK <span className="text-primary">.</span>{' '}
-                </h5>
-            </div>
+            <h5 className="font-semibold text-2xl">Goblin Kids</h5>
             <div className="flex items-center space-x-3">
                 <a
                     href="/"

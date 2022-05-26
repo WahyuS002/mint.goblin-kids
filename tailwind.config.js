@@ -4,6 +4,7 @@ module.exports = {
         extend: {
             fontFamily: {
                 rubik: 'Rubik',
+                'blue-goblet-regular': 'Blue Goblet Regular',
             },
             colors: {
                 primary: '#64C9AE',

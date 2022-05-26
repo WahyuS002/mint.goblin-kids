@@ -179,18 +179,19 @@ export default function Minting() {
         <div className="flex flex-col-reverse md:flex-row justify-between md:items-center">
             <div className="mb-36 md:mb-0 mt-4 mb:mt-4">
                 <h1 className="font-bold text-3xl md:text-6xl text-center md:text-left">
-                    <span>Goblin Kids</span> <br /> <span className="text-primary">Mint</span>
+                    <span>Goblin Kids</span>
+                    <span className="text-primary"> Mint</span>
                 </h1>
-                <div className="w-full bg-semi-dark mt-6 px-6 py-5 rounded-xl">
+                <div className="w-full bg-semi-dark mt-6 px-6 py-5 rounded-xl font-blue-goblet-regular">
                     <div className="flex justify-between">
-                        <span>Supply</span>
-                        <span className="text-sm text-gray-400 font-medium">
+                        <span className="text-2xl">Supply</span>
+                        <span className="text-lg text-gray-400 font-medium">
                             {isWalletConnected() && isContractReady() && !isLoading() ? data.totalSupply : 'XXX'} / {CONFIG.MAX_SUPPLY}
                         </span>
                     </div>
                     <div className="flex justify-between mt-3">
                         <div className="flex items-center">
-                            <span>Amount</span>
+                            <span className="text-2xl">Amount</span>
                             <button
                                 onClick={() => setMintAmount(40)}
                                 className="px-1 text-xs font-semibold bg-primary hover:bg-teal-500 transition-all duration-300 ease-in-out rounded-sm ml-2 text-semi-dark"
@@ -233,7 +234,7 @@ export default function Minting() {
                         </span>
                     </div>
                     <div className="flex justify-between mt-3">
-                        <span>Price</span>
+                        <span className="text-2xl">Price</span>
                         <div className="flex items-center">
                             <span className="mr-1">
                                 <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-gray-400 fill-current">
@@ -241,7 +242,7 @@ export default function Minting() {
                                     <path d="M11.944 17.97L4.58 13.62 11.943 24l7.37-10.38-7.372 4.35h.003zM12.056 0L4.69 12.223l7.365 4.354 7.365-4.35L12.056 0z" />
                                 </svg>
                             </span>
-                            <span className="text-sm text-gray-400 font-medium">
+                            <span className="text-lg text-gray-400 font-medium">
                                 {isWalletConnected() && isContractReady() && !isLoading() ? (
                                     <>{!data.isFreeMintOpen ? web3.utils.fromWei(web3.utils.toBN(data.price), 'ether') * mintAmount + ' ETH' : 'Free'}</>
                                 ) : (
@@ -251,7 +252,7 @@ export default function Minting() {
                         </div>
                     </div>
                     <div className="flex justify-between mt-3">
-                        <span>Contract</span>
+                        <span className="text-2xl">Contract</span>
                         <div className="flex items-center">
                             <span className="mr-1">
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-300" viewBox="0 0 20 20" fill="currentColor">
@@ -269,13 +270,13 @@ export default function Minting() {
                     </div>
                 </div>
                 {claimingNft && (
-                    <button className="mt-6 bg-primary hover:bg-teal-500 transition-all duration-300 ease-in-out text-semi-dark font-semibold text-xl w-full py-3 rounded-lg cursor-not-allowed">
+                    <button className="mt-6 bg-primary hover:bg-teal-500 transition-all duration-300 ease-in-out text-semi-dark font-semibold text-2xl w-full py-3 rounded-lg cursor-not-allowed">
                         Claiming NFT . . .
                     </button>
                 )}
                 {isWalletConnected() && isContractReady() && !isLoading() && !claimingNft ? (
                     <button
-                        className="mt-6 bg-primary hover:bg-teal-500 transition-all duration-300 ease-in-out text-semi-dark font-semibold text-xl w-full py-3 rounded-lg"
+                        className="mt-6 bg-primary hover:bg-teal-500 transition-all duration-300 ease-in-out text-semi-dark font-semibold text-2xl w-full py-3 rounded-lg"
                         onClick={(e) => {
                             e.preventDefault()
                             claimNFTs()
@@ -287,14 +288,14 @@ export default function Minting() {
                 ) : (
                     <>
                         {isLoading() && !claimingNft ? (
-                            <button className="mt-6 bg-primary hover:bg-teal-500 transition-all duration-300 ease-in-out text-semi-dark font-semibold text-xl w-full py-3 rounded-lg cursor-not-allowed">
+                            <button className="mt-6 bg-primary hover:bg-teal-500 transition-all duration-300 ease-in-out text-semi-dark font-semibold text-2xl w-full py-3 rounded-lg cursor-not-allowed">
                                 Loading . . .
                             </button>
                         ) : (
                             <>
                                 {!claimingNft && (
                                     <button
-                                        className="mt-6 bg-primary hover:bg-teal-500 transition-all duration-300 ease-in-out text-semi-dark font-semibold text-xl w-full py-3 rounded-lg"
+                                        className="mt-6 bg-primary hover:bg-teal-500 transition-all duration-300 ease-in-out text-semi-dark font-semibold w-full py-3 rounded-lg text-2xl"
                                         onClick={(e) => {
                                             e.preventDefault()
                                             dispatch(connect())

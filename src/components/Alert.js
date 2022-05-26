@@ -65,7 +65,7 @@ export default function Alert() {
                                             />
                                         </svg>
                                     </span>
-                                    <span className="text-gray-200">
+                                    <span className="text-gray-200 text-xl font-semibold">
                                         <span>{data.paused ? 'Contract Paused' : <>{data.isFreeMintOpen ? 'Free Mint' : 'Public Mint'}</>}</span>
                                         <>
                                             {!data.paused ? (
