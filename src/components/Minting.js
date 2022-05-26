@@ -5,6 +5,7 @@ import { connect } from '../redux/blockchain/blockchainActions'
 import Web3 from 'web3'
 
 import { toast } from 'react-toastify'
+import mintingImage from '../assets/images/minting.png'
 
 const web3 = new Web3()
 const truncate = (input, len) => (input.length > len ? `${input.substring(0, len)}...` : input)
@@ -310,11 +311,7 @@ export default function Minting() {
                     </>
                 )}
             </div>
-            <img
-                src="https://lh3.googleusercontent.com/0TuQ40Ul_R8JuyarGsplYIj_pIomT7iyhP2MZZiiBNX2I0wiq0yQZoNpBtiF96VeioQSikDsrI80BCgpwc-RgGaWko9yctHSU0H05VM=w600"
-                alt="Hero_Image"
-                className="rounded-2xl"
-            />
+            <img src={mintingImage} alt="Hero_Image" className="rounded-2xl md:w-[52%]" />
         </div>
     )
 }
