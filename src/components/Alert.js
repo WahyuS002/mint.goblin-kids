@@ -57,7 +57,7 @@ export default function Alert() {
                             <div className="px-8 md:px-12 py-4 bg-semi-dark border border-gray-600 rounded-lg">
                                 <div className="flex items-center space-x-2">
                                     <span>
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-300 animate-pulse" viewBox="0 0 20 20" fill="currentColor">
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-primary animate-pulse" viewBox="0 0 20 20" fill="currentColor">
                                             <path
                                                 fillRule="evenodd"
                                                 d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
@@ -66,9 +66,15 @@ export default function Alert() {
                                         </svg>
                                     </span>
                                     <span className="text-gray-200">
-                                        <span>Public Mint</span>
-                                        <span className="mx-2 text-gray-400">|</span>
-                                        <span>Max 100 per wallet</span>
+                                        <span>{data.paused ? 'Contract Paused' : <>{data.isFreeMintOpen ? 'Free Mint' : 'Public Mint'}</>}</span>
+                                        <>
+                                            {!data.paused ? (
+                                                <>
+                                                    <span className="mx-2 text-gray-400">|</span>
+                                                    {data.isFreeMintOpen ? <span>Max {data.maxFreePerWallet} free mint per wallet</span> : <span>Max 100 per wallet</span>}
+                                                </>
+                                            ) : null}
+                                        </>
                                     </span>
                                 </div>
                             </div>

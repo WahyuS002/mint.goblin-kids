@@ -97,9 +97,9 @@ export default function Minting() {
     }
 
     const freeMintTokens = (gasLimit) => {
-        if (parseInt(data.currentWalletSupply) + mintAmount > parseInt(data.maxFreeMintAmountPerAddr)) {
+        if (parseInt(data.getMintedFreeTokenByWallet) + mintAmount > parseInt(data.maxFreePerWallet)) {
             toast.warning('Exceeds max free mint per wallet!')
-        } else if (parseInt(data.totalSupply) + mintAmount > parseInt(data.maxFreeMintSupply)) {
+        } else if (parseInt(data.totalSupply) + mintAmount > parseInt(data.maxFreeSupply)) {
             toast.warning('Exceeds max free mint supply!')
         } else {
             toast.info(`Minting your free ${CONFIG.NFT_NAME}...`)
@@ -124,7 +124,7 @@ export default function Minting() {
     }
 
     const mintTokens = (gasLimit, totalCostWei) => {
-        if (mintAmount > parseInt(data.maxMintAmountPerTx)) {
+        if (mintAmount > parseInt(data.maxPerTx)) {
             toast.warning('Exceeds max mint amount per tx!')
         } else if (parseInt(data.totalSupply) + mintAmount > parseInt(data.maxSupply)) {
             toast.warning('Max supply exceeded!')
@@ -134,7 +134,7 @@ export default function Minting() {
             toast.info(`Minting your ${CONFIG.NFT_NAME}...`)
             setClaimingNft(true)
             return blockchain.smartContract.methods
-                .mint(mintAmount)
+                .publicMint(mintAmount)
                 .send({
                     gasLimit: gasLimit,
                     to: CONFIG.CONTRACT_ADDRESS,
@@ -179,7 +179,7 @@ export default function Minting() {
         <div className="flex flex-col-reverse md:flex-row justify-between md:items-center">
             <div className="mb-36 md:mb-0 mt-4 mb:mt-4">
                 <h1 className="font-bold text-3xl md:text-6xl text-center md:text-left">
-                    <span>Mint your</span> <br /> <span className="text-primary">Goblin Kids</span>
+                    <span>Goblin Kids</span> <br /> <span className="text-primary">Mint</span>
                 </h1>
                 <div className="w-full bg-semi-dark mt-6 px-6 py-5 rounded-xl">
                     <div className="flex justify-between">
@@ -241,7 +241,7 @@ export default function Minting() {
                             </span>
                             <span className="text-sm text-gray-400 font-medium">
                                 {isWalletConnected() && isContractReady() && !isLoading() ? (
-                                    <>{!data.isFreeMintOpen ? web3.utils.fromWei(web3.utils.toBN(data.price)) * mintAmount + ' ETH' : 'Free'}</>
+                                    <>{!data.isFreeMintOpen ? web3.utils.fromWei(web3.utils.toBN(data.price), 'ether') * mintAmount + ' ETH' : 'Free'}</>
                                 ) : (
                                     'null'
                                 )}
@@ -260,12 +260,17 @@ export default function Minting() {
                                     />
                                 </svg>
                             </span>
-                            <a href={CONFIG.SCAN_LINK} className="text-sm text-gray-400">
+                            <a href={CONFIG.SCAN_LINK} target={'_blank'} className="text-sm text-gray-400" rel="noreferrer">
                                 {truncate(CONFIG.CONTRACT_ADDRESS, 7)}
                             </a>
                         </div>
                     </div>
                 </div>
+                {claimingNft && (
+                    <button className="mt-6 bg-primary hover:bg-teal-500 transition-all duration-300 ease-in-out text-semi-dark font-semibold text-xl w-full py-3 rounded-lg cursor-not-allowed">
+                        Claiming NFT . . .
+                    </button>
+                )}
                 {isWalletConnected() && isContractReady() && !isLoading() && !claimingNft ? (
                     <button
                         className="mt-6 bg-primary hover:bg-teal-500 transition-all duration-300 ease-in-out text-semi-dark font-semibold text-xl w-full py-3 rounded-lg"

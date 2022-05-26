@@ -14,6 +14,7 @@ const initialState = {
 
     totalSupply: 0,
     currentWalletSupply: 0,
+    getMintedFreeTokenByWallet: 0,
 }
 
 const dataReducer = (state = initialState, action) => {
@@ -33,16 +34,17 @@ const dataReducer = (state = initialState, action) => {
                 errorMsg: '',
 
                 maxSupply: action.payload.maxSupply,
-                cost: action.payload.cost,
-                maxFreeMintSupply: action.payload.maxFreeMintSupply,
-                maxFreeMintAmountPerAddr: action.payload.maxFreeMintAmountPerAddr,
-                maxMintAmountPerTx: action.payload.maxMintAmountPerTx,
+                price: action.payload.price,
+                maxFreeSupply: action.payload.maxFreeSupply,
+                maxFreePerWallet: action.payload.maxFreePerWallet,
+                maxPerTx: action.payload.maxPerTx,
 
                 isFreeMintOpen: action.payload.isFreeMintOpen,
                 paused: action.payload.paused,
 
                 totalSupply: action.payload.totalSupply,
                 currentWalletSupply: action.payload.currentWalletSupply,
+                getMintedFreeTokenByWallet: action.payload.getMintedFreeTokenByWallet,
             }
         case 'CHECK_DATA_FAILED':
             return {

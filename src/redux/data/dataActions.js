@@ -40,6 +40,7 @@ export const fetchData = () => {
             let currentWallet = await store.getState().blockchain.account
             let walletOfOwner = await store.getState().blockchain.smartContract.methods.walletOfOwner(currentWallet).call()
             let currentWalletSupply = walletOfOwner.length
+            let getMintedFreeTokenByWallet = await store.getState().blockchain.smartContract.methods.getMintedFreeTokenByWallet(currentWallet).call()
 
             dispatch(
                 fetchDataSuccess({
@@ -54,6 +55,7 @@ export const fetchData = () => {
 
                     totalSupply,
                     currentWalletSupply,
+                    getMintedFreeTokenByWallet,
                 })
             )
         } catch (err) {
