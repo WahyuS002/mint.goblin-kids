@@ -1,10 +1,10 @@
 {
-    "CONTRACT_ADDRESS": "0x4D9037Ac142328EAF6E45Ca576486492c0e248Da",
-    "SCAN_LINK": "https://etherscan.io/address/0x4D9037Ac142328EAF6E45Ca576486492c0e248Da",
+    "CONTRACT_ADDRESS": "0xF458D5C8f5b29Be938f8C7059982cA2C1eB30Eb0",
+    "SCAN_LINK": "https://etherscan.io/address/0xF458D5C8f5b29Be938f8C7059982cA2C1eB30Eb0",
     "NETWORK": {
-        "NAME": "Rinkeby",
+        "NAME": "Ethereum",
         "SYMBOL": "ETH",
-        "ID": 4
+        "ID": 1
     },
     "NFT_NAME": "Goblin Kids",
     "SYMBOL": "GK",
