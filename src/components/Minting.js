@@ -184,7 +184,9 @@ export default function Minting() {
                 <div className="w-full bg-semi-dark mt-6 px-6 py-5 rounded-xl">
                     <div className="flex justify-between">
                         <span>Supply</span>
-                        <span className="text-sm text-gray-400 font-medium">{isWalletConnected() && isContractReady() && !isLoading() ? data.totalSupply : 'XXX'} / 7777</span>
+                        <span className="text-sm text-gray-400 font-medium">
+                            {isWalletConnected() && isContractReady() && !isLoading() ? data.totalSupply : 'XXX'} / {CONFIG.MAX_SUPPLY}
+                        </span>
                     </div>
                     <div className="flex justify-between mt-3">
                         <div className="flex items-center">
